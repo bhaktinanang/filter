@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deteksi Bot dan Proxy</title>
+    <script>
+        // Daftar User Agent bot yang umum
+        const botUserAgents = [
+            'Googlebot', 'Bingbot', 'Slurp', 'DuckDuckBot', 'Baiduspider',
+            'YandexBot', 'Sogou', 'Exabot', 'facebot', 'ia_archiver'
+        ];
+
+        // Daftar penyedia proxy yang umum
+        const proxyHeaders = [
+            'X-Forwarded-For', 'Via', 'X-Forwarded-Proto', 'Client-IP', 'X-Real-IP'
+        ];
+
+        // Alamat untuk redirect traffic manusia/bot/proxy
+        const humanRedirectUrl = 'https://pesenwebsitekeren.com';
+        const botproxyRedirectUrl = 'https://google.com';
+
+        // Fungsi untuk mendeteksi bot
+        function isBot() {
+            const userAgent = navigator.userAgent;
+            for (let i = 0; i < botUserAgents.length; i++) {
+                if (userAgent.includes(botUserAgents[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Fungsi untuk mendeteksi proxy
+        function isProxy() {
+            const requestHeaders = new Headers();
+            for (let i = 0; i < proxyHeaders.length; i++) {
+                if (requestHeaders.has(proxyHeaders[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Implementasi deteksi bot dan proxy
+        window.onload = function() {
+            if (isBot() || isProxy()) {
+                // Jika terdeteksi bot atau proxy, redirect ke Google
+                window.location.href = 'botproxyRedirectUrl ;
+            } else {
+                // Redirect manusia ke URL yang ditentukan
+                window.location.href = humanRedirectUrl;
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>Selamat datang di website saya</h1>
+    <p>Konten utama website di sini...</p>
+</body>
+</html>

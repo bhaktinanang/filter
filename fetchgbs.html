@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deteksi Bot dan Proxy</title>
+    <script>
+        // Daftar User Agent bot yang umum
+        const botUserAgents = [
+            "Googlebot", "Bingbot", "Slurp"
+        ];
+
+        // Alamat untuk redirect
+        const botProxyRedirectUrl = 'https://www.google.com';
+        const humanRedirectUrl = 'https://your-human-redirect-url.com';
+
+        // Fungsi untuk mendeteksi bot
+        function isBot() {
+            const userAgent = navigator.userAgent;
+            for (let botUserAgent of botUserAgents) {
+                if (new RegExp(botUserAgent, 'i').test(userAgent)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Implementasi deteksi bot dan fetch konten manusia
+        window.onload = function() {
+            const isBotResult = isBot();
+            console.log('Is Bot: ', isBotResult);
+            
+            if (isBotResult) {
+                // Jika terdeteksi bot, redirect ke Google
+                window.location.href = botProxyRedirectUrl;
+            } else {
+                // Fetch konten dari URL manusia
+                fetch(humanRedirectUrl)
+                    .then(response => response.text())
+                    .then(data => {
+                        document.body.innerHTML = data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching human content:', error);
+                    });
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>Selamat datang di website saya</h1>
+    <p>Konten utama website di sini...</p>
+</body>
+</html>
